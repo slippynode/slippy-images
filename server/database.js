@@ -5,11 +5,13 @@ var bcrypt = require('bcrypt-nodejs')
   , Users
   , UsersLogin
   , UsersBanned
-  , Files
-  , UsersFilesSaves
-  , UsersFilesVotes
+  , UsersNotifications
+  , Submissions
+  , SubmissionsComments
+  , UsersSubmissionsSaves
+  , UsersSubmissionsVotes
   , Tags
-  , FilesTags
+  , SubmissionsTags
 ;
 
 Users = bookshelf.Model.extend({
@@ -27,14 +29,14 @@ Users = bookshelf.Model.extend({
   banned: function () {
     return this.hasOne(UsersBanned, 'users_id');
   },
-  files: function () {
-    return this.hasMany(Files, 'users_id');
+  submissions: function () {
+    return this.hasMany(Submissions, 'submissions_id');
   },
-  filesVotes: function () {
-    return this.hasMany(UsersFilesVotes, 'users_id');
+  submissionsVotes: function () {
+    return this.hasMany(UsersSubmissionsVotes, 'submissions_id');
   },
-  filesSaves: function () {
-    return this.hasMany(UsersFilesSaves, 'users_id');
+  submissionsSaves: function () {
+    return this.hasMany(UsersSubmissionsSaves, 'submissions_id');
   }
 });
 
@@ -57,36 +59,61 @@ UsersBanned = bookshelf.Model.extend({
   }
 });
 
-Files = bookshelf.Model.extend({
-  tableName: 'files',
-  idAttribute: 'files_id',
+UsersNotifications = bookshelf.Model.extend({
+  tableName: 'users_notifications',
+  idAttribute: 'users_notifications_id',
+  user: function () {
+    return this.belongsTo(Users, 'users_id');
+  },
+  submission: function () {
+    return this.belongsTo(Submissions, 'submissions_id');
+  },
+  comment: function () {
+    return this.belongsTo(SubmissionsComments, 'submissions_comments_id');
+  }
+});
+
+Submissions = bookshelf.Model.extend({
+  tableName: 'submissions',
+  idAttribute: 'submissions_id',
   user: function () {
     return this.belongsTo(Users, 'users_id');
   },
   tags: function () {
-    return this.hasMany(FilesTags, 'files_id');
+    return this.hasMany(SubmissionsTags, 'submissions_id');
   }
 });
 
-UsersFilesSaves = bookshelf.Model.extend({
-  tableName: 'users_files_saves',
-  idAttribute: 'users_files_saves_id',
+SubmissionsComments = bookshelf.Model.extend({
+  tableName: 'submissions_comments',
+  idAttribute: 'submissions_comments_id',
   user: function () {
     return this.belongsTo(Users, 'users_id');
   },
-  file: function () {
-    return this.belongsTo(Files, 'files_id');
+  submission: function () {
+    return this.belongsTo(Submissions, 'submissions_id');
   }
 });
 
-UsersFilesVotes = bookshelf.Model.extend({
-  tableName: 'users_files_votes',
-  idAttribute: 'users_files_votes_id',
+UsersSubmissionsSaves = bookshelf.Model.extend({
+  tableName: 'users_submissions_saves',
+  idAttribute: 'users_submissions_saves_id',
   user: function () {
     return this.belongsTo(Users, 'users_id');
   },
-  file: function () {
-    return this.belongsTo(Files, 'files_id');
+  submission: function () {
+    return this.belongsTo(Submissions, 'submissions_id');
+  }
+});
+
+UsersSubmissionsVotes = bookshelf.Model.extend({
+  tableName: 'users_submissions_votes',
+  idAttribute: 'users_submissions_votes_id',
+  user: function () {
+    return this.belongsTo(Users, 'users_id');
+  },
+  submission: function () {
+    return this.belongsTo(Submissions, 'submissions_id');
   }
 });
 
@@ -95,11 +122,11 @@ Tags = bookshelf.Model.extend({
   idAttribute: 'tags_id',
 });
 
-FilesTags = bookshelf.Model.extend({
-  tableName: 'tags',
-  idAttribute: 'tags_id',
-  file: function () {
-    return this.hasOne(File, 'files_id');
+SubmissionsTags = bookshelf.Model.extend({
+  tableName: 'submissions_tags',
+  idAttribute: 'submissions_tags_id',
+  submission: function () {
+    return this.hasOne(Submissions, 'submissions_id');
   },
   tag: function () {
     return this.hasOne(Tags, 'tags_id');
@@ -110,9 +137,11 @@ module.exports = {
   "Users": Users,
   "UsersLogin": UsersLogin,
   "UsersBanned": UsersBanned,
-  "Files": Files,
-  "UsersFilesSaves": UsersFilesSaves,
-  "UsersFilesVotes": UsersFilesVotes,
+  "UsersNotifications": UsersNotifications,
+  "Submissions": Submissions,
+  "SubmissionsComments": SubmissionsComments,
+  "UsersSubmissionsSaves": UsersSubmissionsSaves,
+  "UsersSubmissionsVotes": UsersSubmissionsVotes,
   "Tags": Tags,
-  "FilesTags": FilesTags
+  "SubmissionsTags": SubmissionsTags
 };

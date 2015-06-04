@@ -23,31 +23,53 @@ CREATE TABLE users_banned (
     banned_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE files (
-    files_id SERIAL PRIMARY KEY,
+CREATE TABLE users_notifications (
+    users_notifications_id SERIAL PRIMARY KEY,
+    users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
+    submissions_comments_id INTEGER REFERENCES
+        submissions_comments(submissions_comments_id),
+    submissions_id INTEGER REFERENCES submissions(submissions_id),
+    notification_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE submissions (
+    submissions_id SERIAL PRIMARY KEY,
     users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
     hash VARCHAR (255),
     original_name VARCHAR (255),
     name VARCHAR (30),
+    caption VARCHAR (5000),
     size VARCHAR (10),
     directory VARCHAR (255),
     likes INTEGER,
     dislikes INTEGER,
     votes INTEGER,
     upload_ip VARCHAR (12),
+    private BOOLEAN,
     uploaded_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE users_files_saves (
-    users_files_saves_id SERIAL PRIMARY KEY,
-    files_id INTEGER REFERENCES files(files_id),
+CREATE TABLE submissions_comments (
+    submissions_comments_id SERIAL PRIMARY KEY,
+    submissions_id INTEGER REFERENCES submissions(submissions_id),
+    users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
+    body VARCHAR (2500),
+    likes INTEGER,
+    dislikes INTEGER,
+    votes INTEGER,
+    created_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE users_submissions_saves (
+    users_submissions_saves_id SERIAL PRIMARY KEY,
+    submissions_id INTEGER REFERENCES submissions(submissions_id),
     users_id INTEGER REFERENCES users(users_id),
     saved_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE users_files_votes (
-    users_files_votes_id SERIAL PRIMARY KEY,
-    files_id INTEGER REFERENCES files(files_id),
+CREATE TABLE users_submissions_votes (
+    users_submissions_votes_id SERIAL PRIMARY KEY,
+    submissions_id INTEGER REFERENCES submissions(submissions_id),
     users_id INTEGER REFERENCES users(users_id),
     vote VARCHAR (10),
     votes_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -55,20 +77,23 @@ CREATE TABLE users_files_votes (
 
 CREATE TABLE tags (
     tags_id SERIAL PRIMARY KEY,
-    name VARCHAR (50)
+    name VARCHAR (50),
+    created_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE files_tags (
-    files_tags_id SERIAL PRIMARY KEY,
-    files_id INTEGER REFERENCES files(files_id),
+CREATE TABLE submissions_tags (
+    submissions_tags_id SERIAL PRIMARY KEY,
+    submissions_id INTEGER REFERENCES submissions(submissions_id),
     tags_id INTEGER REFERENCES tags(tags_id)
 );
 
 ALTER TABLE users OWNER TO slippyimages_user;
 ALTER TABLE users_login OWNER TO slippyimages_user;
 ALTER TABLE users_banned OWNER TO slippyimages_user;
-ALTER TABLE users_files_saves OWNER TO slippyimages_user;
-ALTER TABLE users_files_votes OWNER TO slippyimages_user;
-ALTER TABLE files OWNER TO slippyimages_user;
+ALTER TABLE users_notifications OWNER TO slippyimages_user;
+ALTER TABLE users_submissions_saves OWNER TO slippyimages_user;
+ALTER TABLE users_submissions_votes OWNER TO slippyimages_user;
+ALTER TABLE submissions OWNER TO slippyimages_user;
+ALTER TABLE submissions_comments OWNER TO slippyimages_user;
 ALTER TABLE tags OWNER TO slippyimages_user;
-ALTER TABLE files_tags OWNER TO slippyimages_user;
+ALTER TABLE submissions_tags OWNER TO slippyimages_user;
