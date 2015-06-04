@@ -2,10 +2,21 @@ CREATE TABLE users (
     users_id SERIAL PRIMARY KEY,
     username VARCHAR (25),
     email VARCHAR (100),
-    password VARCHAR (25),
+    password VARCHAR,
     lockout_enabled BOOLEAN,
     lockout_end_date TIMESTAMP,
     registration_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE users_preferences (
+    users_preferences_id SERIAL PRIMARY KEY,
+    users_id INTEGER REFERENCES users(users_id),
+    night_mode BOOLEAN,
+    bio VARCHAR (500),
+    public_votes BOOLEAN,
+    public_comments BOOLEAN,
+    allow_nsfw BOOLEAN,
+    edited_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users_login (
