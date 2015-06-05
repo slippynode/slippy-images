@@ -32,6 +32,14 @@ describe('SlippyNode Image Server REST API Tests', function () {
       agent.post('/users/login/').send(request).expect(200, done);
     });
 
+    it('GET a single user', function (done) {
+      agent.get('/users/testuser/').expect(200, done);
+    });
+
+    it('GET preferences for a single user', function (done) {
+      agent.get('/users/testuser/preferences/').expect(200, done);
+    });
+
     it('POST logout of an existing user account', function (done) {
       var request = {
         "username": "testuser",
@@ -59,6 +67,14 @@ describe('SlippyNode Image Server REST API Tests', function () {
       agent.put('/users/testuser/').send(request).expect(200, done);
     });
 
+    it('PUT changes to user preferences', function (done) {
+      var request = {
+        "night_mode": true,
+        "bio": "software developer from tucson, az."
+      };
+      agent.put('/users/testuser/preferences').send(request).expect(200, done);
+    });
+
     it('DELETE a user account', function (done) {
       var request = {
         "username": "testuser2",
@@ -67,6 +83,14 @@ describe('SlippyNode Image Server REST API Tests', function () {
       };
       agent.delete('/users/testuser2/').send(request).expect(200, done);
     });
+
+  });
+
+  describe('SUBMISSIONS Tests', function () {
+
+  });
+
+  describe('TAGS Tests', function () {
 
   });
 

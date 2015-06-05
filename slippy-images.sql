@@ -21,7 +21,7 @@ CREATE TABLE users_preferences (
 
 CREATE TABLE users_login (
     users_login_id SERIAL PRIMARY KEY,
-    users_id INTEGER REFERENCES users(users_id),
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
     last_login_ip VARCHAR (12),
     last_login_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -29,14 +29,14 @@ CREATE TABLE users_login (
 CREATE TABLE users_banned (
     users_banned_id SERIAL PRIMARY KEY,
     users_id INTEGER REFERENCES users(users_id),
-    banned_by_users_id INTEGER REFERENCES users(users_id),
+    banned_by_users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
     reason VARCHAR (150),
     banned_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE submissions (
     submissions_id SERIAL PRIMARY KEY,
-    users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
     likes INTEGER DEFAULT 0,
     dislikes INTEGER DEFAULT 0,
     votes INTEGER DEFAULT 0,
@@ -47,8 +47,9 @@ CREATE TABLE submissions (
 
 CREATE TABLE submissions_files (
     submissions_files_id SERIAL PRIMARY KEY,
-    submissions_id INTEGER REFERENCES submissions(submissions_id),
-    users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
+    submissions_id INTEGER REFERENCES submissions(submissions_id)
+        ON DELETE CASCADE,
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE DEFAULT NULL,
     size VARCHAR (10),
     directory VARCHAR (255),
     hash VARCHAR (255),
@@ -61,8 +62,9 @@ CREATE TABLE submissions_files (
 
 CREATE TABLE submissions_comments (
     submissions_comments_id SERIAL PRIMARY KEY,
-    submissions_id INTEGER REFERENCES submissions(submissions_id),
-    users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
+    submissions_id INTEGER REFERENCES submissions(submissions_id)
+        ON DELETE CASCADE,
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE DEFAULT NULL,
     body VARCHAR (2500),
     likes INTEGER DEFAULT 0,
     dislikes INTEGER DEFAULT 0,
@@ -73,24 +75,27 @@ CREATE TABLE submissions_comments (
 
 CREATE TABLE users_notifications (
     users_notifications_id SERIAL PRIMARY KEY,
-    users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE DEFAULT NULL,
     submissions_comments_id INTEGER REFERENCES
-        submissions_comments(submissions_comments_id),
-    submissions_id INTEGER REFERENCES submissions(submissions_id),
+        submissions_comments(submissions_comments_id) ON DELETE CASCADE,
+    submissions_id INTEGER REFERENCES submissions(submissions_id)
+        ON DELETE CASCADE,
     notification_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users_submissions_saves (
     users_submissions_saves_id SERIAL PRIMARY KEY,
-    submissions_id INTEGER REFERENCES submissions(submissions_id),
-    users_id INTEGER REFERENCES users(users_id),
+    submissions_id INTEGER REFERENCES submissions(submissions_id)
+        ON DELETE CASCADE,
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
     saved_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users_submissions_votes (
     users_submissions_votes_id SERIAL PRIMARY KEY,
-    submissions_id INTEGER REFERENCES submissions(submissions_id),
-    users_id INTEGER REFERENCES users(users_id),
+    submissions_id INTEGER REFERENCES submissions(submissions_id)
+        ON DELETE CASCADE,
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
     vote VARCHAR (10),
     votes_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -103,8 +108,9 @@ CREATE TABLE tags (
 
 CREATE TABLE submissions_tags (
     submissions_tags_id SERIAL PRIMARY KEY,
-    submissions_id INTEGER REFERENCES submissions(submissions_id),
-    tags_id INTEGER REFERENCES tags(tags_id)
+    submissions_id INTEGER REFERENCES submissions(submissions_id)
+        ON DELETE CASCADE,
+    tags_id INTEGER REFERENCES tags(tags_id) ON DELETE CASCADE
 );
 
 ALTER TABLE users OWNER TO slippyimages_user;
