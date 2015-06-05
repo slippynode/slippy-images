@@ -53,7 +53,7 @@ describe('SlippyNode Image Server REST API Tests', function () {
     it('PUT changes to a user account', function (done) {
       var request = {
         "username": "testuser2",
-        "email": "testuser@test.com",
+        "email": "testuser2@test.com",
         "password": "opensesame"
       };
       agent.put('/users/testuser/').send(request).expect(200, done);

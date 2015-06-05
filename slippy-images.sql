@@ -1,21 +1,21 @@
 CREATE TABLE users (
     users_id SERIAL PRIMARY KEY,
-    username VARCHAR (25),
-    email VARCHAR (100),
+    username VARCHAR (25) UNIQUE,
+    email VARCHAR (100) UNIQUE,
     password VARCHAR,
-    lockout_enabled BOOLEAN,
+    lockout_enabled BOOLEAN DEFAULT FALSE,
     lockout_end_date TIMESTAMP,
     registration_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users_preferences (
     users_preferences_id SERIAL PRIMARY KEY,
-    users_id INTEGER REFERENCES users(users_id),
-    night_mode BOOLEAN,
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
+    night_mode BOOLEAN DEFAULT FALSE,
     bio VARCHAR (500),
-    public_votes BOOLEAN,
-    public_comments BOOLEAN,
-    allow_nsfw BOOLEAN,
+    public_votes BOOLEAN DEFAULT TRUE,
+    public_comments BOOLEAN DEFAULT TRUE,
+    allow_nsfw BOOLEAN DEFAULT TRUE,
     edited_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -37,10 +37,11 @@ CREATE TABLE users_banned (
 CREATE TABLE submissions (
     submissions_id SERIAL PRIMARY KEY,
     users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
-    likes INTEGER,
-    dislikes INTEGER,
-    votes INTEGER,
-    private BOOLEAN,
+    likes INTEGER DEFAULT 0,
+    dislikes INTEGER DEFAULT 0,
+    votes INTEGER DEFAULT 0,
+    private BOOLEAN DEFAULT FALSE,
+    anonymous BOOLEAN,
     created_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -63,9 +64,10 @@ CREATE TABLE submissions_comments (
     submissions_id INTEGER REFERENCES submissions(submissions_id),
     users_id INTEGER REFERENCES users(users_id) DEFAULT NULL,
     body VARCHAR (2500),
-    likes INTEGER,
-    dislikes INTEGER,
-    votes INTEGER,
+    likes INTEGER DEFAULT 0,
+    dislikes INTEGER DEFAULT 0,
+    votes INTEGER DEFAULT 0,
+    anonymous BOOLEAN,
     created_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -116,3 +118,6 @@ ALTER TABLE submissions_files OWNER TO slippyimages_user;
 ALTER TABLE submissions_comments OWNER TO slippyimages_user;
 ALTER TABLE tags OWNER TO slippyimages_user;
 ALTER TABLE submissions_tags OWNER TO slippyimages_user;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO slippyimages_user;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO slippyimages_user;
