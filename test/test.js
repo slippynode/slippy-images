@@ -88,6 +88,44 @@ describe('SlippyNode Image Server REST API Tests', function () {
 
   describe('SUBMISSIONS Tests', function () {
 
+    it('POST register a new user account', function (done) {
+      var request = {
+        "username": "testuser",
+        "email": "testuser@test.com",
+        "password": "secret"
+      };
+      agent.post('/users/').send(request).expect(201, done);
+    });
+
+    it('POST login to an existing user account', function (done) {
+      var request = {
+        "username": "testuser",
+        "email": "testuser@test.com",
+        "password": "secret"
+      };
+      agent.post('/users/login/').send(request).expect(200, done);
+    });
+
+    it('POST upload a new image', function (done) {
+      var request = {
+      };
+      agent
+        .post('/submissions/')
+        .send(request)
+        .attach('file', './test/cutedog.jpg')
+        .expect(200, done)
+      ;
+    });
+
+    it('DELETE a user account', function (done) {
+      var request = {
+        "username": "testuser",
+        "email": "testuser@test.com",
+        "password": "secret"
+      };
+      agent.delete('/users/testuser/').send(request).expect(200, done);
+    });
+
   });
 
   describe('TAGS Tests', function () {
