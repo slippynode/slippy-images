@@ -106,8 +106,12 @@ describe('SlippyNode Image Server REST API Tests', function () {
       agent.post('/users/login/').send(request).expect(200, done);
     });
 
-    it('POST upload a new image', function (done) {
+    it('POST upload a new user submission', function (done) {
       var request = {
+        "title": "This is a title",
+        "caption": "This is a picture of a cute dog.",
+        "private": false,
+        "anonymous": false
       };
       agent
         .post('/submissions/')
@@ -124,6 +128,21 @@ describe('SlippyNode Image Server REST API Tests', function () {
         "password": "secret"
       };
       agent.delete('/users/testuser/').send(request).expect(200, done);
+    });
+
+    it('POST upload a new anonymous submission', function (done) {
+      var request = {
+        "title": "This is a title",
+        "caption": "This is a picture of a cute dog.",
+        "private": false,
+        "anonymous": true
+      };
+      agent
+        .post('/submissions/')
+        .send(request)
+        .attach('file', './test/cutedog.jpg')
+        .expect(200, done)
+      ;
     });
 
   });
