@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE users (
     users_id SERIAL PRIMARY KEY,
     username VARCHAR (25) UNIQUE,
@@ -6,12 +8,6 @@ CREATE TABLE users (
     lockout_enabled BOOLEAN DEFAULT FALSE,
     lockout_end_date TIMESTAMP,
     registration_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE users_anonymous (
-    users_anonymous_id SERIAL PRIMARY KEY,
-    ip_address VARCHAR,
-    created_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users_preferences (
@@ -43,6 +39,7 @@ CREATE TABLE users_banned (
 CREATE TABLE submissions (
     submissions_id SERIAL PRIMARY KEY,
     users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
+    name UUID DEFAULT uuid_generate_v4() NOT NULL,
     title VARCHAR (200),
     likes INTEGER DEFAULT 1,
     dislikes INTEGER DEFAULT 0,
@@ -56,12 +53,13 @@ CREATE TABLE submissions_files (
     submissions_files_id SERIAL PRIMARY KEY,
     submissions_id INTEGER REFERENCES submissions(submissions_id)
         ON DELETE CASCADE,
-    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE DEFAULT NULL,
-    size VARCHAR (10),
-    directory VARCHAR (255),
-    original_name VARCHAR (255),
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
+    size INTEGER,
+    directory VARCHAR,
+    original_name VARCHAR,
+    name VARCHAR,
     caption VARCHAR (5000),
-    upload_ip VARCHAR (12),
+    upload_ip VARCHAR,
     uploaded_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -119,7 +117,6 @@ CREATE TABLE submissions_tags (
 );
 
 ALTER TABLE users OWNER TO slippyimages_user;
-ALTER TABLE users_anonymous OWNER TO slippyimages_user;
 ALTER TABLE users_login OWNER TO slippyimages_user;
 ALTER TABLE users_banned OWNER TO slippyimages_user;
 ALTER TABLE users_notifications OWNER TO slippyimages_user;

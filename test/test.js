@@ -1,14 +1,30 @@
-var supertest = require('supertest');
+var exec = require('child_process').exec
+  , supertest = require('supertest')
+;
 
 describe('SlippyNode Image Server REST API Tests', function () {
 
   var server, agent;
 
   before(function (done) {
-    require('../lib/server')(function (server) {
-      server = server;
-      agent = supertest.agent(server);
-      done();
+    var cmd = 'createdb -O slippyimages_user slippyimages_db -E utf8';
+    cmd += ' && psql -d slippyimages_db -f slippy-images.sql';
+    exec(cmd, function (error, stdout, stderr) {
+      if (error) throw error;
+      if (stderr) throw stderr;
+      require('../lib/server')(function (server) {
+        server = server;
+        agent = supertest.agent(server);
+        done();
+      });
+    });
+  });
+
+  after(function () {
+    var cmd = 'dropdb slippyimages_db';
+    exec(cmd, function (error, stdout, stderr) {
+      if (error) throw error;
+      if (stderr) throw stderr;
     });
   });
 
@@ -88,6 +104,8 @@ describe('SlippyNode Image Server REST API Tests', function () {
 
   describe('SUBMISSIONS Tests', function () {
 
+    var submission;
+
     it('POST register a new user account', function (done) {
       var request = {
         "username": "testuser",
@@ -107,39 +125,60 @@ describe('SlippyNode Image Server REST API Tests', function () {
     });
 
     it('POST upload a new user submission', function (done) {
-      var request = {
-        "title": "This is a title",
-        "caption": "This is a picture of a cute dog.",
-        "private": false,
-        "anonymous": false
-      };
       agent
         .post('/submissions/')
-        .send(request)
+        .field('title', 'This is a title')
+        .field('caption', 'This is a picture of a cute dog.')
+        .field('private', 'false')
+        .field('anonymous', 'false')
         .attach('file', './test/cutedog.jpg')
         .expect(200, done)
       ;
     });
 
+    it('GET all submissions', function (done) {
+      agent
+        .get('/submissions/')
+        .end(function (error, response) {
+          if (error) throw error;
+          if (response.status === 200) {
+            submission = response.body[0].name;
+            done();
+          }
+        })
+      ;
+    });
+
+    it('GET a single submission', function (done) {
+      agent.get('/submissions/' + submission + '/').expect(200, done);
+    });
+
+    it('UPDATE a submission', function (done) {
+      agent
+        .put('/submissions/' + submission + '/')
+        .field('title', 'This is an updated title')
+        .field('caption', 'This is an updated picture of a cute dog.')
+        .field('private', 'false')
+        .field('anonymous', 'false')
+        .expect(200, done)
+      ;
+    });
+
+    it('DELETE a submission', function (done) {
+      agent.delete('/submissions/' + submission + '/').expect(200, done);
+    });
+
     it('DELETE a user account', function (done) {
-      var request = {
-        "username": "testuser",
-        "email": "testuser@test.com",
-        "password": "secret"
-      };
-      agent.delete('/users/testuser/').send(request).expect(200, done);
+      agent.delete('/users/testuser/').expect(200, done);
     });
 
     it('POST upload a new anonymous submission', function (done) {
-      var request = {
-        "title": "This is a title",
-        "caption": "This is a picture of a cute dog.",
-        "private": false,
-        "anonymous": true
-      };
       agent
         .post('/submissions/')
-        .send(request)
+        .field('title', 'This is a title')
+        .field('caption', 'This is a picture of a cute dog.')
+        .field('private', 'false')
+        .field('anonymous', 'true')
         .attach('file', './test/cutedog.jpg')
         .expect(200, done)
       ;
