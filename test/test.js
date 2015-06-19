@@ -153,7 +153,7 @@ describe('SlippyNode Image Server REST API Tests', function () {
       agent.get('/submissions/' + submission + '/').expect(200, done);
     });
 
-    it('UPDATE a submission', function (done) {
+    it('PUT update a submission', function (done) {
       agent
         .put('/submissions/' + submission + '/')
         .field('title', 'This is an updated title')
@@ -182,6 +182,101 @@ describe('SlippyNode Image Server REST API Tests', function () {
         .attach('file', './test/cutedog.jpg')
         .expect(200, done)
       ;
+    });
+
+  });
+
+  describe('SUBMISSIONS FILES Tests', function () {
+
+    var submission, submissionsFile;
+
+    it('POST register a new user account', function (done) {
+      var request = {
+        "username": "testuser",
+        "email": "testuser@test.com",
+        "password": "secret"
+      };
+      agent.post('/users/').send(request).expect(201, done);
+    });
+
+    it('POST login to an existing user account', function (done) {
+      var request = {
+        "username": "testuser",
+        "email": "testuser@test.com",
+        "password": "secret"
+      };
+      agent.post('/users/login/').send(request).expect(200, done);
+    });
+
+    it('POST upload a new user submission', function (done) {
+      agent
+        .post('/submissions/')
+        .field('title', 'This is a title')
+        .field('caption', 'This is a picture of a cute dog.')
+        .field('private', 'false')
+        .field('anonymous', 'false')
+        .attach('file', './test/cutedog.jpg')
+        .end(function (error, response) {
+          if (error) throw error;
+          if (response.status === 200) {
+            file = response.body.name;
+            submission = response.body.submission;
+            done();
+          }
+        })
+      ;
+    });
+
+    it('GET a single submissions file', function (done) {
+      agent
+        .get('/submissions/' + submission + '/' + file)
+        .expect(200, done)
+      ;
+    });
+
+    it('POST upload a new user submissions file', function (done) {
+      agent
+        .post('/submissions/' + submission + '/')
+        .field('title', 'This is a title')
+        .field('caption', 'This is a picture of a cute dog.')
+        .field('private', 'false')
+        .field('anonymous', 'false')
+        .attach('file', './test/cutedog.jpg')
+        .end(function (error, response) {
+          if (error) throw error;
+          if (response.status === 200) {
+            file = response.body.name;
+            submission = response.body.submission;
+            done();
+          }
+        })
+      ;
+    });
+
+    it('PUT update a submission', function (done) {
+      agent
+        .put('/submissions/' + submission + '/' + file + '/')
+        .field('title', 'This is an updated title')
+        .field('caption', 'This is an updated picture of a cute dog.')
+        .field('private', 'false')
+        .field('anonymous', 'false')
+        .expect(200, done)
+      ;
+    });
+
+    it('DELETE a submissions file', function (done) {
+      agent
+        .delete('/submissions/' + submission + '/' + file + '/')
+        .expect(200, done)
+      ;
+    });
+
+    it('DELETE a submission', function (done) {
+      agent.delete('/submissions/' + submission + '/').expect(200, done);
+    });
+
+    it('DELETE a user account', function (done) {
+      agent.delete('/users/testuser/').expect(200, done);
     });
 
   });
