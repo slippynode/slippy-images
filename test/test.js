@@ -136,6 +136,23 @@ describe('SlippyNode Image Server REST API Tests', function () {
       ;
     });
 
+    it('POST upload a new user multi-submission', function (done) {
+      agent
+        .post('/submissions/')
+        .field('title', 'This is a title')
+        .field('caption', 'This is a picture of a cute dog.')
+        .field('private', 'false')
+        .field('anonymous', 'false')
+        .attach('file', './test/cutedog.jpg')
+        .attach('file', './test/cutedog.jpg')
+        .attach('file', './test/cutedog.jpg')
+        .attach('file', './test/cutedog.jpg')
+        .attach('file', './test/cutedog.jpg')
+        .attach('file', './test/cutedog.jpg')
+        .expect(200, done)
+      ;
+    });
+
     it('GET all submissions', function (done) {
       agent
         .get('/submissions/')
