@@ -1,0 +1,23 @@
+{
+  "name": "slippy-images",
+  "main": "index.js",
+  "version": "0.0.1-dev",
+  "homepage": "https://github.com/slippynode/slippy-images",
+  "authors": [
+    "asonnenschein <adrian.sonnenschein@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.4.1",
+    "jquery": "2.1.4",
+    "pure": "0.6.0",
+    "react": "0.13.3"
+  }
+}
