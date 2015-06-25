@@ -1,30 +1,114 @@
-
 var React = require('react');
 var Layout = require('../layouts/default');
 
-// Contrived example to show how one might use Flow type annotations
-function countTo(n:number):string {
-  var a = [];
-  for (var i = 0; i < n; i++ ) {
-    a.push(i + 1);
+var NavBarLink = React.createClass({
+  render: function () {
+    return (
+      <a href={this.props.url} className="pure-menu-link">{this.props.text}</a>
+    );
   }
-  return a.join(', ');
-}
+});
+
+var NavBarItem = React.createClass({
+  generateLink: function () {
+    return <NavBarLink url={this.props.url} text={this.props.text} />;
+  },
+  render: function () {
+    var content = this.generateLink();
+    return (<li className="pure-menu-item">{content}</li>);
+  }
+});
+
+var NavBar = React.createClass({
+  getInitialState: function () {
+    return {};
+  },
+  toggleHorizontal: function () {
+    [].forEach.call(
+      React.findDOMNode(this.refs.headerNav)
+        .querySelectorAll('.custom-can-transform'),
+      function (element) {
+        element.classList.toggle('pure-menu-horizontal');
+      }
+    );
+  },
+  toggleMenu: function () {
+    var element = React.findDOMNode(this.refs.headerNav);
+    if (element.classList.contains('open')) {
+      setTimeout(this.toggleHorizontal, 500);
+    }
+    else {
+      this.toggleHorizontal();
+    }
+    element.classList.toggle('open');
+    React.findDOMNode(this.refs.toggle).classList.toggle('x');
+  },
+  closeMenu: function () {
+    var element = React.findDOMNode(this.refs.headerNav);
+    if (element.classList.contains('open')) {
+      this.toggleMenu();
+    }
+  },
+  componentDidMount: function() {
+    var self = this
+      , toggle = React.findDOMNode(this.refs.toggle)
+    ;
+
+    toggle.addEventListener('click', function (e) {
+      self.toggleMenu();
+    });
+
+    window.addEventListener('resize', this.closeMenu);
+  },
+  componentWillUnmount: function() {
+    window.removeEventListener('resize', this.closeMenu);
+  },
+  generateItem: function (item) {
+    return <NavBarItem text={item.text} url={item.url} />
+  },
+  render: function () {
+    var items = this.props.data.map(this.generateItem);
+    return (
+      <div className="custom-wrapper" ref="headerNav">
+        <div className="content-container pure-g">
+          <div className="pure-u-1 pure-u-md-1-2">
+            <div className="pure-menu">
+              <a href="#" className="pure-menu-heading custom-brand">
+                SlippyNode
+              </a>
+              <a href="#" className="custom-toggle" ref="toggle">
+                <s className="bar"></s>
+                <s className="bar"></s>
+              </a>
+            </div>
+          </div>
+          <div className="pure-u-1 pure-u-md-1-2">
+            <div className="pure-menu pure-menu-horizontal custom-menu-3
+              custom-can-transform">
+              <ul className="pure-menu-list">
+                {items}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+var data = [
+  {"text": "Home", "url": "/"},
+  {"text": "Galleries", "url": "/galleries"},
+  {"text": "About", "url": "/about"},
+];
 
 var Index = React.createClass({
-  propTypes: {
-    title: React.PropTypes.string
-  },
-
   render: function() {
     return (
-      <Layout title={this.props.title}>
-        <h1>{this.props.title}</h1>
-        <p>Welcome to {this.props.title}</p>
-        <p>
-          I can count to 10:
-          {countTo(10)}
-        </p>
+      <Layout>
+        <nav>
+          <NavBar data={data}/>
+        </nav>
       </Layout>
     );
   }

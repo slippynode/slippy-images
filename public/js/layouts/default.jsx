@@ -9,14 +9,13 @@ var Layout = React.createClass({
     return (
       <html>
         <head>
-          <title>{this.props.title}</title>
-          <link rel="stylesheet" href="/stylesheets/style.css" />
-          <script dangerouslySetInnerHTML={{__html:`
-            // This is making use of ES6 template strings, which allow for
-            // multiline strings. We specified "{jsx: {harmony: true}}" when
-            // creating the engine in app.js to get this feature.
-            console.log("hello world");
-          `}}/>
+          <meta charset="utf-8" />
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>SlippyNode</title>
+          <link rel="stylesheet" href="/assets/pure/pure-min.css" />
+          <link rel="stylesheet" href="/assets/pure/grids-responsive-min.css" />
+          <link rel="stylesheet" href="/css/base.css" />
         </head>
         <body>
           {this.props.children}
