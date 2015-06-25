@@ -2,10 +2,11 @@ var express = require('express')
   , logger = require('morgan')
   , cookieParser = require('cookie-parser')
   , session = require('express-session')
+  , reactViews = require('express-react-views')
   , bodyParser = require('body-parser')
   , passport = require('passport')
   , multer = require('multer')
-  , config = require('./../config.json')
+  , config = require('./config.json')
   , database = require('./database')
   , routes = require('./routes')(database)
   , server = express();
@@ -14,6 +15,11 @@ var express = require('express')
 server.set('port', process.env.PORT || 3030);
 
 server.use(logger());
+
+server.use(express.static(__dirname + '/public'));
+server.set('views', __dirname + '/public/js/views');
+server.set('view engine', 'jsx');
+server.engine('jsx', reactViews.createEngine({doctype: "<!DOCTYPE html>", beautify: true}));
 
 server.use(cookieParser('secret'));
 server.use(bodyParser.urlencoded({ extended: true }));
@@ -38,11 +44,8 @@ function checkAuthorization (req, res, next) {
 }
 
 // Public Routes ===============================================================
-server.use(express.static(__dirname + './../public'));
-server.use(express.static(__dirname + './../views'));
-
 server.get('/', function (req, res) {
-  res.sendFile('index.html');
+  res.render('index', { title: 'Express', foo: {bar:'baz'} });
 });
 
 // Login & Logout Routes =======================================================
