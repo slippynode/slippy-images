@@ -1,6 +1,3 @@
-var React = require('react');
-var Layout = require('../layouts/default');
-
 var NavBarLink = React.createClass({
   render: function () {
     return (
@@ -67,14 +64,17 @@ var NavBar = React.createClass({
     return <NavBarItem text={item.text} url={item.url} />
   },
   render: function () {
-    var items = this.props.data.map(this.generateItem);
+    var items = [
+      {"text": "Login", "url": "/login"},
+      {"text": "Register", "url": "/register"},
+    ].map(this.generateItem);
     return (
       <div className="custom-wrapper" ref="headerNav">
         <div className="content-container pure-g">
           <div className="pure-u-1 pure-u-md-1-2">
             <div className="pure-menu">
               <a href="#" className="pure-menu-heading custom-brand">
-                SlippyNode
+                ImageSlip
               </a>
               <a href="#" className="custom-toggle" ref="toggle">
                 <s className="bar"></s>
@@ -96,22 +96,41 @@ var NavBar = React.createClass({
   }
 });
 
-var data = [
-  {"text": "Home", "url": "/"},
-  {"text": "Galleries", "url": "/galleries"},
-  {"text": "About", "url": "/about"},
-];
+var App = React.createClass({
+  render () {
+    var Child;
+    switch (this.props.route) {
+      case '':
+        Child = Home;
+        break;
+      case 'home':
+        Child = Home;
+        break;
+      case 'login':
+        Child = Login;
+        break;
+      case 'register':
+        Child = Register;
+        break;
+      default:
+        Child = Home;
+    }
 
-var Index = React.createClass({
-  render: function() {
     return (
-      <Layout>
-        <nav>
-          <NavBar data={data}/>
-        </nav>
-      </Layout>
-    );
+      <div>
+          <nav>
+            <NavBar />
+          </nav>
+          <Child />
+      </div>
+    )
   }
 });
 
-module.exports = Index;
+function render () {
+  var route = window.location.hash.substr(1);
+  React.render(<App route={route} />, document.body);
+}
+
+window.addEventListener('hashchange', render);
+render();
