@@ -66,6 +66,7 @@ var NavBar = React.createClass({
   render: function () {
     var items = [
       {"text": "Search", "url": "/search"},
+      {"text": "Upload", "url": "/Upload"},
       {"text": "Login", "url": "/login"},
       {"text": "Register", "url": "/register"},
     ].map(this.generateItem);
@@ -98,8 +99,59 @@ var NavBar = React.createClass({
   }
 });
 
+var FooterLink = React.createClass({
+  render: function () {
+    return (
+      <a href={this.props.url} className="pure-menu-link">{this.props.text}</a>
+    );
+  }
+});
+
+var FooterItem = React.createClass({
+  generateLink: function () {
+    return <NavBarLink url={this.props.url} text={this.props.text} />;
+  },
+  render: function () {
+    var content = this.generateLink();
+    return (<li className="pure-menu-item">{content}</li>);
+  }
+});
+
+var Footer = React.createClass({
+  getInitialState: function () {
+    return {};
+  },
+  generateItem: function (item) {
+    return <FooterItem text={item.text} url={item.url} />
+  },
+  render: function () {
+    var items = [
+      {"text": "Code", "url": "/code"},
+      {"text": "Blog", "url": "/blog"},
+      {"text": "About", "url": "/about"},
+      {"text": "FAQ", "url": "/faq"},
+    ].map(this.generateItem);
+    return (
+      <div className="footer-wrapper" ref="footer">
+        <div className="content-container pure-g">
+          <div className="pure-u-md-1-2">
+          </div>
+          <div className="pure-u-1-2">
+            <div className="pure-menu pure-menu-horizontal custom-menu-3">
+              <ul className="pure-menu-list">
+                {items}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+
 var App = React.createClass({
-  render () {
+  render: function () {
     var Child;
     switch (this.props.route) {
       case '':
@@ -117,6 +169,9 @@ var App = React.createClass({
       case 'search':
         Child = Search;
         break;
+      case 'upload':
+        Child = Upload;
+        break;
       default:
         Child = Home;
     }
@@ -129,13 +184,16 @@ var App = React.createClass({
           <div className="content-wrapper">
             <Child />
           </div>
+          <footer>
+            <Footer />
+          </footer>
       </div>
     )
   }
 });
 
 function render () {
-  var route = window.location.hash.substr(1);
+  var route = window.location.pathname.split('/').filter(Boolean)[0];
   React.render(<App route={route} />, document.body);
 }
 

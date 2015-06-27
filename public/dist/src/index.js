@@ -66,6 +66,7 @@ var NavBar = React.createClass({displayName: "NavBar",
   render: function () {
     var items = [
       {"text": "Search", "url": "/search"},
+      {"text": "Upload", "url": "/Upload"},
       {"text": "Login", "url": "/login"},
       {"text": "Register", "url": "/register"},
     ].map(this.generateItem);
@@ -98,8 +99,59 @@ var NavBar = React.createClass({displayName: "NavBar",
   }
 });
 
+var FooterLink = React.createClass({displayName: "FooterLink",
+  render: function () {
+    return (
+      React.createElement("a", {href: this.props.url, className: "pure-menu-link"}, this.props.text)
+    );
+  }
+});
+
+var FooterItem = React.createClass({displayName: "FooterItem",
+  generateLink: function () {
+    return React.createElement(NavBarLink, {url: this.props.url, text: this.props.text});
+  },
+  render: function () {
+    var content = this.generateLink();
+    return (React.createElement("li", {className: "pure-menu-item"}, content));
+  }
+});
+
+var Footer = React.createClass({displayName: "Footer",
+  getInitialState: function () {
+    return {};
+  },
+  generateItem: function (item) {
+    return React.createElement(FooterItem, {text: item.text, url: item.url})
+  },
+  render: function () {
+    var items = [
+      {"text": "Code", "url": "/code"},
+      {"text": "Blog", "url": "/blog"},
+      {"text": "About", "url": "/about"},
+      {"text": "FAQ", "url": "/faq"},
+    ].map(this.generateItem);
+    return (
+      React.createElement("div", {className: "footer-wrapper", ref: "footer"}, 
+        React.createElement("div", {className: "content-container pure-g"}, 
+          React.createElement("div", {className: "pure-u-md-1-2"}
+          ), 
+          React.createElement("div", {className: "pure-u-1-2"}, 
+            React.createElement("div", {className: "pure-menu pure-menu-horizontal custom-menu-3"}, 
+              React.createElement("ul", {className: "pure-menu-list"}, 
+                items
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+
 var App = React.createClass({displayName: "App",
-  render () {
+  render: function () {
     var Child;
     switch (this.props.route) {
       case '':
@@ -117,6 +169,9 @@ var App = React.createClass({displayName: "App",
       case 'search':
         Child = Search;
         break;
+      case 'upload':
+        Child = Upload;
+        break;
       default:
         Child = Home;
     }
@@ -128,6 +183,9 @@ var App = React.createClass({displayName: "App",
           ), 
           React.createElement("div", {className: "content-wrapper"}, 
             React.createElement(Child, null)
+          ), 
+          React.createElement("footer", null, 
+            React.createElement(Footer, null)
           )
       )
     )
@@ -135,7 +193,7 @@ var App = React.createClass({displayName: "App",
 });
 
 function render () {
-  var route = window.location.hash.substr(1);
+  var route = window.location.pathname.split('/').filter(Boolean)[0];
   React.render(React.createElement(App, {route: route}), document.body);
 }
 

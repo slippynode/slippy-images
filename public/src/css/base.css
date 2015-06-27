@@ -110,7 +110,28 @@ nav .navigation-wrapper ul.pure-menu-list a {
 
 nav .navigation-wrapper ul.pure-menu-list a:hover {
     background-color: transparent;
-    color: #70C1B3;
+    color: #FFFFFF;
+}
+
+footer {
+    bottom: 0;
+    width: 100%;
+    position: absolute;
+}
+
+footer .footer-wrapper {
+    background-color: #3F3F3E;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+}
+
+footer .footer-wrapper ul.pure-menu-list a {
+    color: #FFEFB2;
+}
+
+footer .footer-wrapper ul.pure-menu-list a:hover {
+    background-color: transparent;
+    color: #FFFFFF;
 }
 
 @media (max-width: 47.999em) {
