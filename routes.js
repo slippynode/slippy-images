@@ -176,6 +176,8 @@ module.exports = function (db) {
                   var isImage
                     , thumbnailsPath
                     , thumbnailsData
+                    , fileToResize
+                    , gravity
                   ;
 
                   file = file.toJSON();
@@ -201,7 +203,17 @@ module.exports = function (db) {
                   ;
 
                   if (isImage > -1) {
-                    thumbnailsPath = path.join(config.thumbnails, file.name);
+
+                    if (path.extname(file.name) === '.gif') {
+                      fileToResize = file.directory + '[0]';
+                      thumbnailsPath = path.join(config.thumbnails, file.name);
+                      thumbnailsPath = thumbnailsPath
+                        .replace(path.extname(thumbnailsPath), '.png');
+                    }
+                    else {
+                      fileToResize = file.directory;
+                      thumbnailsPath = path.join(config.thumbnails, file.name);
+                    }
 
                     thumbnailsData = {
                       "submissions_id": submissions.id,
@@ -210,7 +222,7 @@ module.exports = function (db) {
                       "name": file.name
                     };
 
-                    gm(file.directory)
+                    gm(fileToResize)
                       .resize('300', '300', '^')
                       .gravity('Center')
                       .crop('300', '300')
