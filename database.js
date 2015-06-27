@@ -9,6 +9,7 @@ var bcrypt = require('bcrypt-nodejs')
   , UsersNotifications
   , Submissions
   , SubmissionsFiles
+  , SubmissionsThumbnails
   , SubmissionsComments
   , UsersSubmissionsSaves
   , UsersSubmissionsVotes
@@ -118,6 +119,20 @@ SubmissionsFiles = bookshelf.Model.extend({
   },
 });
 
+SubmissionsThumbnails = bookshelf.Model.extend({
+  tableName: 'submissions_thumbnails',
+  idAttribute: 'submissions_thumbnails_id',
+  user: function () {
+    return this.belongsTo(Users, 'users_id');
+  },
+  submission: function () {
+    return this.belongsTo(Submissions, 'submissions_id');
+  },
+  submissionsFiles: function () {
+    return this.belongsTo(SubmissionsFiles, 'submissions_files_id');
+  },
+});
+
 SubmissionsComments = bookshelf.Model.extend({
   tableName: 'submissions_comments',
   idAttribute: 'submissions_comments_id',
@@ -175,6 +190,7 @@ module.exports = {
   "UsersNotifications": UsersNotifications,
   "Submissions": Submissions,
   "SubmissionsFiles": SubmissionsFiles,
+  "SubmissionsThumbnails": SubmissionsThumbnails,
   "SubmissionsComments": SubmissionsComments,
   "UsersSubmissionsSaves": UsersSubmissionsSaves,
   "UsersSubmissionsVotes": UsersSubmissionsVotes,

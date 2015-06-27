@@ -13,7 +13,7 @@ var express = require('express')
 
 server.set('port', process.env.PORT || 3030);
 
-server.use(logger());
+//server.use(logger());
 
 server.use(express.static(__dirname + '/public'));
 
@@ -38,15 +38,6 @@ function checkAuthorization (req, res, next) {
   if (req.isAuthenticated && req.user.id) return next();
   else res.status(401).send("Unauthorized request!");
 }
-
-// Public Routes ===============================================================
-server.get('/login', function (req, res) {
-  res.sendFile(__dirname + '/public/dist/index.html');
-});
-
-server.get('/*', function (req, res) {
-  res.sendFile(__dirname + '/public/dist/index.html');
-});
 
 // Login & Logout Routes =======================================================
 server.post('/users/login/',
@@ -231,5 +222,14 @@ server.delete('/tags/',
     return next();
   }, routes.deleteTags)
 ;
+
+// Public Routes ===============================================================
+server.get('/login', function (req, res) {
+  res.sendFile(__dirname + '/public/dist/index.html');
+});
+
+server.get('/*', function (req, res) {
+  res.sendFile(__dirname + '/public/dist/index.html');
+});
 
 module.exports = function (callback) { callback(server); };

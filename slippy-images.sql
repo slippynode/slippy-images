@@ -63,6 +63,19 @@ CREATE TABLE submissions_files (
     uploaded_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE submissions_thumbnails (
+    submissions_thumbnails_id SERIAL PRIMARY KEY,
+    submissions_id INTEGER REFERENCES submissions(submissions_id)
+        ON DELETE CASCADE,
+    submissions_files_id INTEGER REFERENCES
+        submissions_files(submissions_files_id)
+        ON DELETE CASCADE,
+    users_id INTEGER REFERENCES users(users_id) ON DELETE CASCADE,
+    directory VARCHAR,
+    name VARCHAR,
+    created_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE submissions_comments (
     submissions_comments_id SERIAL PRIMARY KEY,
     submissions_id INTEGER REFERENCES submissions(submissions_id)

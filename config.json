@@ -1,5 +1,7 @@
 {
   "uploads": "./uploads/",
+  "thumbnails": "./thumbnails/",
+  "thumbnail_extensions": [".jpg", ".png"],
   "allowed_extensions": ["jpg", "png", "gif", "webm"],
   "db": {
     "client": "postgres",

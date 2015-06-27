@@ -1,4 +1,8 @@
-var _ = require('lodash');
+var _ = require('lodash')
+  , path = require('path')
+  , config = require('./config.json')
+  , gm = require('gm')
+;
 
 module.exports = function (db) {
 
@@ -121,7 +125,7 @@ module.exports = function (db) {
     getSubmissions: function (req, res, next) {
       new db.Submissions().fetchAll()
         .then(function (submissions) {
-          return res.status(200).send(submissions);
+          return res.status(200).send(submissions.toJSON());
         })
         .catch(function (error) {
           return res.status(404).send("Could not get submissions!");
@@ -141,7 +145,6 @@ module.exports = function (db) {
     },
 
     createSubmission: function (req, res, next) {
-
       function makeSubmission (usersId) {
         var submissionsData = {
           "title": req.body.title,
@@ -169,20 +172,65 @@ module.exports = function (db) {
 
               new db.SubmissionsFiles(submissionsFileData).save()
                 .then(function (file) {
+
+                  var isImage
+                    , thumbnailsPath
+                    , thumbnailsData
+                  ;
+
                   file = file.toJSON();
                   file.submission = submissions.get('name');
-                  if (req.files.file.length > 0) {
-                    var nextFile = req.files.file.shift();
-                    if (nextFile) {
-                      recursiveFileUpload(nextFile);
+
+                  function recurseOrReturn (file) {
+                    if (req.files.file.length > 0) {
+                      var nextFile = req.files.file.shift();
+                      if (nextFile) {
+                        recursiveFileUpload(nextFile);
+                      }
+                      else {
+                        return res.status(200).send(file);
+                      }
                     }
                     else {
                       return res.status(200).send(file);
                     }
+                  };
+
+                  isImage = config.thumbnail_extensions
+                    .indexOf(path.extname(file.name))
+                  ;
+
+                  if (isImage > -1) {
+                    thumbnailsPath = path.join(config.thumbnails, file.name);
+
+                    thumbnailsData = {
+                      "submissions_id": submissions.id,
+                      "submissions_files_id": file.submissions_files_id,
+                      "directory": thumbnailsPath,
+                      "name": file.name
+                    };
+
+                    gm(file.directory)
+                      .resize('300', '300', '^')
+                      .gravity('Center')
+                      .crop('300', '300')
+                      .write(thumbnailsPath, function (err) {
+                        if (err) console.log(err);
+                        new db.SubmissionsThumbnails(thumbnailsData).save()
+                          .then(function (thumbnail) {
+                            recurseOrReturn(file);
+                          })
+                          .catch(function (error) {
+                            return res.status(404)
+                              .send("Could not upload file!");
+                          })
+                      })
+                    ;
                   }
                   else {
-                    return res.status(200).send(file);
+                    recurseOrReturn(file);
                   }
+
                 })
                 .catch(function (error) {
                   return res.status(404).send("Could not upload file!");
