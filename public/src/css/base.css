@@ -1,7 +1,22 @@
+/* FONTS ==================================================================== */
+@font-face {
+    font-family: 'pacifico';
+    src: url('fonts/pacifico/Pacifico.ttf') format('truetype');
+}
+
+.pacifico-font {
+    font-family: 'pacifico';
+}
+
 /* BASE ===================================================================== */
 
+html, body {
+    height: 100%;
+    background-color: #50514F;
+}
+
 .content-container {
-    max-width: 975px;
+    max-width: 960px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 10px;
@@ -10,11 +25,10 @@
 
 /* INDEX ==================================================================== */
 
-.custom-wrapper {
-    background-color: #ffd390;
-    margin-bottom: 1em;
+.navigation-wrapper {
+    background-color: #2D2D2C;
     -webkit-font-smoothing: antialiased;
-    height: 2.1em;
+    height: 60px;
     overflow: hidden;
     font-size: 14px;
     -webkit-transition: height 0.5s;
@@ -23,7 +37,7 @@
     transition: height 0.5s;
 }
 
-.custom-wrapper.open {
+.navigation-wrapper.open {
     height: 9em;
 }
 
@@ -78,7 +92,25 @@
 }
 
 .pure-menu-heading {
-    padding-left: 0em;
+    padding: 0em;
+    text-transform: lowercase;
+    font-size: 30px;
+    color: #F25F5C;
+    line-height: 50px;
+    text-shadow: 1px 1px 0px white;
+}
+
+nav .navigation-wrapper ul.pure-menu-list {
+    margin-top: 15px;
+}
+
+nav .navigation-wrapper ul.pure-menu-list a {
+    color: #FFE066;
+}
+
+nav .navigation-wrapper ul.pure-menu-list a:hover {
+    background-color: transparent;
+    color: #70C1B3;
 }
 
 @media (max-width: 47.999em) {

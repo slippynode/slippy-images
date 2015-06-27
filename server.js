@@ -40,6 +40,10 @@ function checkAuthorization (req, res, next) {
 }
 
 // Public Routes ===============================================================
+server.get('/login', function (req, res) {
+  res.sendFile(__dirname + '/public/dist/index.html');
+});
+
 server.get('/*', function (req, res) {
   res.sendFile(__dirname + '/public/dist/index.html');
 });

@@ -65,16 +65,18 @@ var NavBar = React.createClass({displayName: "NavBar",
   },
   render: function () {
     var items = [
+      {"text": "Search", "url": "/search"},
       {"text": "Login", "url": "/login"},
       {"text": "Register", "url": "/register"},
     ].map(this.generateItem);
     return (
-      React.createElement("div", {className: "custom-wrapper", ref: "headerNav"}, 
+      React.createElement("div", {className: "navigation-wrapper", ref: "headerNav"}, 
         React.createElement("div", {className: "content-container pure-g"}, 
           React.createElement("div", {className: "pure-u-1 pure-u-md-1-2"}, 
             React.createElement("div", {className: "pure-menu"}, 
-              React.createElement("a", {href: "#", className: "pure-menu-heading custom-brand"}, 
-                "ImageSlip"
+              React.createElement("a", {href: "/", className: "pure-menu-heading custom-brand" + ' ' +
+              "pacifico-font"}, 
+                "imageslip"
               ), 
               React.createElement("a", {href: "#", className: "custom-toggle", ref: "toggle"}, 
                 React.createElement("s", {className: "bar"}), 
@@ -112,6 +114,9 @@ var App = React.createClass({displayName: "App",
       case 'register':
         Child = Register;
         break;
+      case 'search':
+        Child = Search;
+        break;
       default:
         Child = Home;
     }
@@ -121,7 +126,9 @@ var App = React.createClass({displayName: "App",
           React.createElement("nav", null, 
             React.createElement(NavBar, null)
           ), 
-          React.createElement(Child, null)
+          React.createElement("div", {className: "content-wrapper"}, 
+            React.createElement(Child, null)
+          )
       )
     )
   }

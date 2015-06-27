@@ -65,16 +65,18 @@ var NavBar = React.createClass({
   },
   render: function () {
     var items = [
+      {"text": "Search", "url": "/search"},
       {"text": "Login", "url": "/login"},
       {"text": "Register", "url": "/register"},
     ].map(this.generateItem);
     return (
-      <div className="custom-wrapper" ref="headerNav">
+      <div className="navigation-wrapper" ref="headerNav">
         <div className="content-container pure-g">
           <div className="pure-u-1 pure-u-md-1-2">
             <div className="pure-menu">
-              <a href="#" className="pure-menu-heading custom-brand">
-                ImageSlip
+              <a href="/" className="pure-menu-heading custom-brand
+              pacifico-font">
+                imageslip
               </a>
               <a href="#" className="custom-toggle" ref="toggle">
                 <s className="bar"></s>
@@ -112,6 +114,9 @@ var App = React.createClass({
       case 'register':
         Child = Register;
         break;
+      case 'search':
+        Child = Search;
+        break;
       default:
         Child = Home;
     }
@@ -121,7 +126,9 @@ var App = React.createClass({
           <nav>
             <NavBar />
           </nav>
-          <Child />
+          <div className="content-wrapper">
+            <Child />
+          </div>
       </div>
     )
   }
