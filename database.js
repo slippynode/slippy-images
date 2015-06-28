@@ -100,12 +100,12 @@ Submissions = bookshelf.Model.extend({
   user: function () {
     return this.belongsTo(Users, 'users_id');
   },
-  submissionsFiles: function () {
+  submissionFile: function () {
     return this.hasMany(SubmissionsFiles, 'submissions_files_id');
   },
-  tags: function () {
-    return this.hasMany(SubmissionsTags, 'submissions_id');
-  }
+  submissionThumbnail: function () {
+    return this.hasMany(SubmissionsThumbnails, 'submissions_thumbnails_id');
+  },
 });
 
 SubmissionsFiles = bookshelf.Model.extend({
@@ -116,6 +116,9 @@ SubmissionsFiles = bookshelf.Model.extend({
   },
   submission: function () {
     return this.belongsTo(Submissions, 'submissions_id');
+  },
+  submissionThumbnail: function () {
+    return this.hasOne(SubmissionsThumbnails, 'submissions_thumbnails_id');
   },
 });
 
@@ -128,7 +131,7 @@ SubmissionsThumbnails = bookshelf.Model.extend({
   submission: function () {
     return this.belongsTo(Submissions, 'submissions_id');
   },
-  submissionsFiles: function () {
+  submissionFile: function () {
     return this.belongsTo(SubmissionsFiles, 'submissions_files_id');
   },
 });

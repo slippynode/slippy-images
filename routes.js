@@ -336,18 +336,44 @@ module.exports = function (db) {
     // Submissions Files Routes ================================================
 
     getSubmissionsFile: function (req, res, next) {
-      new db.SubmissionsFiles({ name: req.params.file })
-        .fetch({ withRelated: ['submission'] })
-        .then(function (file) {
-          var submission = file.related('submission');
-          if (submission.get('name') === req.params.submission) {
+      if (req.params.submission === 'all' && req.params.file === 'all') {
+        new db.SubmissionsFiles()
+          .fetchAll({
+            withRelated: ['submission', 'submissionThumbnail']
+/*
+            withRelated: [{
+              submission: function (qb) {
+                qb.column('name', 'title', 'likes', 'dislikes', 'votes');
+              },
+              submissionThumbnail: function (qb) {
+                qb.column('directory', 'name');
+              }
+            }],
+            columns: ['directory', 'original_name', 'name', 'caption']
+*/
+          })
+          .then(function (file) {
             return res.status(200).send(file);
-          }
-        })
-        .catch(function (error) {
-          return res.status(404).send("Could not get file!");
-        })
-      ;
+          })
+          .catch(function (error) {
+            return res.status(404).send("Could not get file!");
+          })
+        ;
+      }
+      else{
+        new db.SubmissionsFiles({ name: req.params.file })
+          .fetch({ withRelated: ['submission'] })
+          .then(function (file) {
+            var submission = file.related('submission');
+            if (submission.get('name') === req.params.submission) {
+              return res.status(200).send(file);
+            }
+          })
+          .catch(function (error) {
+            return res.status(404).send("Could not get file!");
+          })
+        ;
+      }
     },
 
     createSubmissionsFile: function (req, res, next) {

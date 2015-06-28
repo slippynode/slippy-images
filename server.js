@@ -169,7 +169,7 @@ server.delete('/submissions/:submission/',
 ;
 
 // Submissions Files Routes ====================================================
-server.get('/submissions/:submission/:file/',
+server.get('/submissions/:submission/files/:file/',
   function (req, res, next) {
     return next();
   }, routes.getSubmissionsFile)
@@ -190,14 +190,14 @@ server.post('/submissions/:submission/',
   }, routes.createSubmissionsFile)
 ;
 
-server.put('/submissions/:submission/:file/',
+server.put('/submissions/:submission/files/:file/',
   checkAuthorization,
   function (req, res, next) {
     return next();
   }, routes.updateSubmissionsFile)
 ;
 
-server.delete('/submissions/:submission/:file/',
+server.delete('/submissions/:submission/files/:file',
   checkAuthorization,
   function (req, res, next) {
     return next();
@@ -224,6 +224,9 @@ server.delete('/tags/',
 ;
 
 // Public Routes ===============================================================
+server.use("/images", express.static(__dirname + '/uploads/'));
+server.use("/thumbnails", express.static(__dirname + '/thumbnails/'));
+
 server.get('/login', function (req, res) {
   res.sendFile(__dirname + '/public/dist/index.html');
 });

@@ -116,7 +116,7 @@ nav .navigation-wrapper ul.pure-menu-list a:hover {
 footer {
     bottom: 0;
     width: 100%;
-    position: absolute;
+    position: fixed;
 }
 
 footer .footer-wrapper {
@@ -155,10 +155,6 @@ footer .footer-wrapper ul.pure-menu-list a:hover {
 }
 
 /* HOME ===================================================================== */
-
-.normalize-image {
-    padding-bottom: 10px;
-}
 
 .header {
     font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
